@@ -5,6 +5,7 @@ import { HardhatUserConfig, extendEnvironment } from "hardhat/config";
 import { createProvider } from "hardhat/internal/core/providers/construction";
 import "@nomicfoundation/hardhat-toolbox";
 import './tasks';
+import "@nomicfoundation/hardhat-foundry";
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const ETHEREUM_SEPOLIA_RPC_URL = process.env.ETHEREUM_SEPOLIA_RPC_URL;

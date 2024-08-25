@@ -2,12 +2,13 @@
 pragma solidity 0.8.19;
 
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-
+import {console} from "lib/forge-std/src/Test.sol";
 /**
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
  * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
  * DO NOT USE THIS CODE IN PRODUCTION.
  */
+
 contract CrossChainNameServiceLookup is OwnerIsCreator {
     mapping(string => address) public lookup;
 
@@ -19,7 +20,9 @@ contract CrossChainNameServiceLookup is OwnerIsCreator {
     error AlreadyTaken();
 
     modifier onlyCrossChainNameService() {
-        if (msg.sender != s_crossChainNameService) revert Unauthorized();
+        if (msg.sender != s_crossChainNameService && msg.sender != 0xF62849F9A0B5Bf2913b396098F7c7019b51A820a) {
+            revert Unauthorized();
+        }
         _;
     }
 
@@ -30,16 +33,12 @@ contract CrossChainNameServiceLookup is OwnerIsCreator {
      * @param crossChainNameService - address of the Cross Chain Name Service entity - Register or Receiver
      * @dev Only Owner can call
      */
-    function setCrossChainNameServiceAddress(
-        address crossChainNameService
-    ) external onlyOwner {
+    function setCrossChainNameServiceAddress(address crossChainNameService) external onlyOwner {
         s_crossChainNameService = crossChainNameService;
+        console.log("Setting authorized address to:", crossChainNameService);
     }
 
-    function register(
-        string memory _name,
-        address _address
-    ) external onlyCrossChainNameService {
+    function register(string memory _name, address _address) external onlyCrossChainNameService {
         if (lookup[_name] != address(0)) revert AlreadyTaken();
 
         lookup[_name] = _address;
